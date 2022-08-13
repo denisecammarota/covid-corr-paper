@@ -8,3 +8,6 @@
 
 #all zip files
 *.zip
+
+#files too large for git
+Covid19Casos.csv
