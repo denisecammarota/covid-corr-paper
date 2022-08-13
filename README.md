@@ -1,13 +1,14 @@
-# COVID-19 Correlation Analysis for intial propagation in Argentina
+# Correlation Analysis for initial propagation of COVID-19 in Argentina
 
+## Motivation
 
-# Goals
+## Goals
 
+## Dataset 
 
-# Methods
+## Methods
 
-
-# Project structure
+## Project structure
 
 
 

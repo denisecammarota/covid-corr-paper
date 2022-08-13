@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+#all html files (related to markdowns)
+*.html
+
+#all zip files
+*.zip
