@@ -7,7 +7,7 @@ library(dplyr)
 # Loading cases data ---------------------------------------------
 
 # cases input path
-cases_file <- 'data/processed/confirmed/Covid19Casos_processed.csv'
+cases_file <- 'data/processed/Covid19Casos_processed.csv'
 
 cases <- read.csv(cases_file) # read cases
 
@@ -21,6 +21,10 @@ cases_province <- cases %>% group_by(residencia_provincia_nombre,
 
 # get list of provinces
 provinces <- unique(cases_province$residencia_provincia_nombre)
+
+# filter registers with 'SIN ESPECIFICAR' as province
+cases_province <- filter(cases_province,
+                         residencia_provincia_nombre != 'SIN ESPECIFICAR')
 
 # get last date of reporting in 2020
 max_date <- max(cases_province$fecha_inicio_sintomas)
@@ -49,3 +53,7 @@ for(i in seq(1,nr,1)){
   }
 }
 
+# Saving data, including time series, dates and provinces -----------------
+write.csv(m,'data/processed/c_provinces.csv')
+write.csv(dates,'data/processed/c_dates_provinces.csv')
+write.csv(provinces,'data/processed/c_names_provinces.csv')
