@@ -54,6 +54,14 @@ for(i in seq(1,nr,1)){
 }
 
 # Saving data, including time series, dates and provinces -----------------
-write.csv(m,'data/processed/c_provinces.csv')
-write.csv(dates,'data/processed/c_dates_provinces.csv')
-write.csv(provinces,'data/processed/c_names_provinces.csv')
+write.table(m,'data/processed/c_provinces.csv',
+          row.names = FALSE,
+          col.names = FALSE)
+write.table(dates,'data/processed/c_dates_provinces.csv',
+            row.names = FALSE,
+            col.names = FALSE)
+write.table(provinces,'data/processed/c_names_provinces.csv',
+            row.names = FALSE,
+            col.names = FALSE)
+
+
