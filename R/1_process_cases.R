@@ -29,7 +29,8 @@ data$fecha_apertura <- as.Date(data$fecha_apertura)
 
 # getting only confirmed cases in 2020
 cases <- filter(data, clasificacion_resumen == 'Confirmado'
-                & fecha_apertura < '2021-01-01')
+                & fecha_apertura < '2021-01-01'
+                & fecha_inicio_sintomas < '2021-01-01')
 
 # positions with na in fecha_inicio_sintomas
 s <- is.na(cases$fecha_inicio_sintomas)
