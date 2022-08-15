@@ -44,6 +44,5 @@ cases$fecha_apertura <- NULL
 cases$clasificacion_resumen <- NULL
 
 # Saving data to output file -----------------------------------
-
-output_file <- 'data/processed/Covid19Casos_processed.csv'# output file path
+output_file <- 'data/processed/cases_processed.csv'# output path
 fwrite(cases,output_file) # write output file
