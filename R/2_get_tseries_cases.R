@@ -4,10 +4,13 @@
 # Loading of necessary libraries ---------------------------------
 library(dplyr)
 
+# Loading of necessary functions ---------------------------------
+source('fct/get_infected.R')
+
 # Loading cases data ---------------------------------------------
 
 # cases input path
-cases_file <- 'data/processed/Covid19Casos_processed.csv'
+cases_file <- 'data/processed/cases_processed.csv'
 
 cases <- read.csv(cases_file) # read cases
 
@@ -35,7 +38,7 @@ min_date <- min(cases_province$fecha_inicio_sintomas)
 # get a complete vector of dates
 dates <- seq(min_date,max_date,by='days')
 
-# matrix to have our time series
+# matrix to have our time series of new cases
 nr <- length(provinces) # number of rows
 nc <- length(dates) # number of columns
 m <- matrix(0,nr,nc) # matrix of 0 of correct size
@@ -53,9 +56,13 @@ for(i in seq(1,nr,1)){
   }
 }
 
+# summing last 14 days for each to get infected per day
+m <- get_infected(m,14)
+
+
 # Saving data, including time series, dates and provinces -----------------
-write.table(m,'data/processed/c_provinces.csv')
-write.table(dates,'data/processed/c_dates_provinces.csv')
-write.table(provinces,'data/processed/c_names_provinces.csv')
+write.csv(m,'data/processed/cases_provs.csv')
+write.csv(dates,'data/processed/cases_dates_provs.csv')
+write.csv(provinces,'data/processed/cases_names_provs.csv')
 
 
