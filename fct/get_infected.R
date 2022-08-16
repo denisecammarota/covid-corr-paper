@@ -5,6 +5,7 @@
 get_infected <- function(m,d){
   # m is a matrix of time series of provinces x days
   # d is duration of infectious period in days
+  # returns matrix of same dimensions as m
   nr <- nrow(m) # number of rows or provinces
   nc <- ncol(m) # number of cols or days in time series
   m_res <- matrix(0,nr,nc) # result matrix
