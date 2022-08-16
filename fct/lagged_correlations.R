@@ -10,7 +10,6 @@ lagged_correlations <- function(m){
   lags <- matrix(0,nr,nr) # lags matrix
   for(i in seq(1,nr,1)){
     for(j in seq(i,nr,1)){
-      print(paste(i,j))
       tmp_corr <- ccf(m[i, ], m[j, ], plot = FALSE)
       max_index <- which.max(tmp_corr$acf) # max lag index
       corrs[i,j] <- tmp_corr$acf[max_index] # max correlation
