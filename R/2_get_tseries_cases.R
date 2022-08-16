@@ -29,6 +29,8 @@ provinces <- unique(cases_province$residencia_provincia_nombre)
 cases_province <- filter(cases_province,
                          residencia_provincia_nombre != 'SIN ESPECIFICAR')
 
+provinces <- provinces[provinces != 'SIN ESPECIFICAR']
+
 # get last date of reporting in 2020
 max_date <- max(cases_province$fecha_inicio_sintomas)
 
