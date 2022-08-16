@@ -18,7 +18,7 @@ lagged_correlations <- function(m){
       corrs[i,j] <- tmp_corr$acf[max_index] # max correlation
       corrs[j,i] <- corrs[i,j] # transpose correlation
       lags[i,j] <- tmp_corr$lag[max_index]  # lag at max correlation
-      lags[j,i] <- -lags[i,i] # transpose lag
+      lags[j,i] <- -lags[i,j] # transpose lag
     }
   }
   return(list(corrs, lags))
