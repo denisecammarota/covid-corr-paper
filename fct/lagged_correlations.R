@@ -5,12 +5,15 @@
 lagged_correlations <- function(m){
   # m matrix where each row is a time series
   # returns matrices of correlations and lags
-  nr <- nrow(m)
+  nr <- nrow(m) # number of m rows (provinces)
+  nc <- ncol(m) # number of m columns (days)
   corrs <- matrix(0,nr,nr) # correlation matrix
   lags <- matrix(0,nr,nr) # lags matrix
   for(i in seq(1,nr,1)){
     for(j in seq(i,nr,1)){
-      tmp_corr <- ccf(m[i, ], m[j, ], plot = FALSE)
+      tmp_corr <- ccf(m[i, ], m[j, ],
+                      plot = FALSE,
+                      lag.max = nc)
       max_index <- which.max(tmp_corr$acf) # max lag index
       corrs[i,j] <- tmp_corr$acf[max_index] # max correlation
       corrs[j,i] <- corrs[i,j] # transpose correlation
