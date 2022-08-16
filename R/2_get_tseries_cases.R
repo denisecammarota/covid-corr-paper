@@ -63,8 +63,8 @@ m <- get_infected(m,14)
 
 
 # Saving data, including time series, dates and provinces -----------------
-write.csv(m,'data/processed/cases_provs.csv')
-write.csv(dates,'data/processed/cases_dates_provs.csv')
-write.csv(provinces,'data/processed/cases_names_provs.csv')
+write.csv(m,'outputs/cases_provs.csv')
+write.csv(dates,'outputs/cases_dates_provs.csv')
+write.csv(provinces,'outputs/cases_names_provs.csv')
 
 
