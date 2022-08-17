@@ -30,6 +30,7 @@ dplyr
 data.table
 ggplot2
 reshape2
+matrixStats
 ```
 These can be installed by running the following commands in an R terminal:
 
@@ -38,8 +39,9 @@ install.packages("dplyr")
 install.packages("data.table")
 install.packages("ggplot2")
 install.packages("reshape2")
+install.packages("matrixStats")
 ```
-In particular, we use `data.table` in order to load our large dataset in the first script `1_process_cases.R`, whereas `dplyr` is used in the rest of the scripts to handle and process data. `ggplot2` and `reshape2` are used in the `4_plot_corrs_lags.R` in order to plot the results of our analyses. 
+In particular, we use `data.table` in order to load our large dataset in the first script `1_process_cases.R`, whereas `dplyr` is used in the rest of the scripts to handle and process data. `ggplot2` and `reshape2` are used in the `4_plot_corrs_lags.R` in order to plot the results of our analyses. Finally, package `matrixStats` is used to compute row standard deviation in the last script of our project. 
 
 ## Project structure
 This is the corresponding folder structure, updated as of the day of the last commit to the project. This structure is subject of modification until completion of the project.  
