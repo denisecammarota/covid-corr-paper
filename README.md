@@ -24,13 +24,22 @@ The dataset of confirmed cases is the official dataset provided by the Argentini
 
 ## Requirements 
 
-Apart from base R, the libraries `dplyr` and `data.table` need to be installed in order to run all scripts. These can be installed by running the following commands in an R terminal:
+Apart from base R, the following libraries need to be installed in order to run all scripts:
+```
+dplyr
+data.table
+ggplot2
+reshape2
+```
+These can be installed by running the following commands in an R terminal:
 
 ```
 install.packages("dplyr")
 install.packages("data.table")
+install.packages("ggplot2")
+install.packages("reshape2")
 ```
-In particular, we use `data.table` in order to load our large dataset in the first script `1_process_cases`, whereas `dplyr` is used in the rest of the scripts to handle and process data. 
+In particular, we use `data.table` in order to load our large dataset in the first script `1_process_cases.R`, whereas `dplyr` is used in the rest of the scripts to handle and process data. `ggplot2` and `reshape2` are used in the `4_plot_corrs_lags.R` in order to plot the results of our analyses. 
 
 ## Project structure
 This is the corresponding folder structure, updated as of the day of the last commit to the project. This structure is subject of modification until completion of the project.  
