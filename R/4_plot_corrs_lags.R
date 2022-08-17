@@ -5,6 +5,7 @@
 library(ggplot2) # plot
 library(reshape2) # melt function
 library(dplyr)
+library(matrixStats)
 
 # Loading of data ---------------------------------------------
 
@@ -119,9 +120,10 @@ ggplot2::ggsave(filename = "figs/cases_lags.png",
 
 ## Mean Correlation -------------------------------------------
 
-# taking the mean and convert for ggplot to data.frame
-mean_corrs <- data.frame(rowMeans(corrs))
+# taking the mean and std, convert for ggplot to data.frame
+mean_corrs <- data.frame(rowMeans(corrs)) # mean corr per province
 seq_provs <- seq(1, ncol(corrs), 1) # numeric sequence for xticks
+sd_corrs <- rowSds(corrs) # std per province
 
 # plot corrs per province
 ggplot(mean_corrs,
@@ -136,7 +138,9 @@ ggplot(mean_corrs,
   theme(plot.title=element_text(size = 12,
                                 hjust = 0.5),
         axis.text.x = element_text(size = 9, angle = 90,
-                                   vjust = 0.6))
+                                   vjust = 0.6)) +
+  geom_errorbar(aes(ymin=rowMeans.corrs.-sd_corrs,
+                    ymax=rowMeans.corrs.+sd_corrs))
 
 # saving the plot
 ggplot2::ggsave(filename = "figs/cases_mcorrs.png",
@@ -147,13 +151,15 @@ ggplot2::ggsave(filename = "figs/cases_mcorrs.png",
 
 
 # taking out Formosa to plot again
-mean_corrs_sf <- data.frame(mean_corrs[-9, ]) # eliminating Formosa
+mean_corrs_sf <- data.frame(mean_corrs[-9, ]) # eliminating Formosa mean
+sd_corrs_sf <- sd_corrs[-9] # eliminating Formosa sd
 seq_provs_sf <- seq(1, ncol(corrs)-1, 1) # new province seq for xticks
-names(seq_provs_sf) <- 'rowMeans.corrs.' #correcting new name
+names(mean_corrs_sf) <- 'rowMeans.corrs.' # correcting new name
+
 
 # plot corrs per province
 ggplot(mean_corrs_sf,
-       aes(x = seq_provs_sf, y = mean_corrs..9...)) +
+       aes(x = seq_provs_sf, y = rowMeans.corrs.)) +
   geom_point(size=3) +
   geom_line(size=1) +
   theme_bw() +
@@ -164,7 +170,9 @@ ggplot(mean_corrs_sf,
   theme(plot.title=element_text(size = 12,
                                 hjust = 0.5),
         axis.text.x = element_text(size = 9, angle = 90,
-                                   vjust = 0.6))
+                                   vjust = 0.6)) +
+  geom_errorbar(aes(ymin = rowMeans.corrs. - sd_corrs_sf,
+                    ymax = rowMeans.corrs. + sd_corrs_sf))
 
 # saving the plot
 ggplot2::ggsave(filename = "figs/cases_mcorrs_sf.png",
@@ -175,9 +183,9 @@ ggplot2::ggsave(filename = "figs/cases_mcorrs_sf.png",
 
 # Mean Lags ------------------------------------------------
 
-# taking the mean and convert for ggplot to data.frame
+# taking the mean and std, convert for ggplot to data.frame
 mean_lags <- data.frame(rowMeans(lags))
-
+sd_lags <- rowSds(lags)
 # plot mean lag per province
 ggplot(mean_lags,
        aes(x = seq_provs, y = rowMeans.lags.)) +
@@ -191,7 +199,9 @@ ggplot(mean_lags,
   theme(plot.title=element_text(size = 12,
                                 hjust = 0.5),
         axis.text.x = element_text(size = 9, angle = 90,
-                                   vjust = 0.6))
+                                   vjust = 0.6)) +
+  geom_errorbar(aes(ymin = rowMeans.lags. - sd_lags,
+                    ymax= rowMeans.lags. + sd_lags))
 
 # saving the plot
 ggplot2::ggsave(filename = "figs/cases_mlags.png",
