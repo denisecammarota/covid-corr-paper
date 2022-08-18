@@ -1,0 +1,83 @@
+---
+title: "Project Report"
+author: "Denise Stefania Cammarota"
+date: "2022-08-18"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+subtitle: "Lagged Cross-correlations between COVID-19 cases in Argentinian provinces
+  during initial stages of propagation"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+COVID-19 is a disease caused by the SARS-COV-2 virus, which belong to the family of coronaviruses. Some of these viruses have been known in the past for causing mild to severe respiratory diseases in humans and cause small to medium sized epidemics. However, COVID-19 spread became worldwide not too late after the first cases were detected in late 2019 in China. As a consequence, COVID-19 has been defined as a pandemic on the 11th March 2020 by the World Health Organization (WHO). In Argentina, the first imported COVID-19 case was detected on March 2020. Even though initial cases were imported, community propagation of the virus rapidly took over in all Argentinian provinces (which are Argentina's administrative divisions, similar to states). It is remarkable that this happened even though strong isolation measures were put into place as early as the March 15th 2020. In this context, it is interesting to investigate which were the relationships between the provinces. That is, we want to quantify how primary cases in one place caused secondary cases elsewhere. Intuitively, this would have to do with some measure of connectiveness between provinces and better connected provinces like CABA (Argentina's capital) would have a strong influence in epidemiological dynamics. Furthermore, provinces where the first imported cases were detected would also play important roles in the propagation. 
+
+In the literature, several authors have had the idea of understanding how the connectiveness between places has influenced spread of COVID-19. Some of them have used methods in order to detect clusters of similar incidence of the disease over time. Others have used well-established administrative divisions (like countries, provinces or states) and have tried to use different methods to correlate them. During my master research, we decided to use a standard way of quantifying relationships between epidemic time series: lagged cross-correlations between time series of infected in Argentinian provinces. In particular, we focused on time series spanning 2020, since propagation began to be influenced by many more factors afterwards (like vaccination). 
+
+In this project, my goal is to calculate these lagged cross-correlations using R and analyze these results. The main questions that I want to tackle are which provinces have higher/lower correlations and lags, if this makes sense intuitively and if provinces which acted as drivers of epidemic propagation could be determined from this analyses. 
+
+## Information about the dataset 
+The dataset that was used contains information on all tests performed on a national scale. It was downloaded from the official website of the Argentinian Ministry of Health, which is responsible for reporting tests and cases across the country. This website is periodically updated to include newer reports. In particular, the dataset we used for this study was downloaded on August 13th of 2022 and contains tests up until the second week of August of the same year. Since this dataset is overwritten every time an update happens, I downloaded an uploaded it [on this link](https://drive.google.com/file/d/1j1QXQZu60LGApLWroKqafhmUa9XdE-m7/view?usp=sharing) of my personal Drive. Total size of the dataset is about 6GB. 
+
+This dataset has several attributes for each record, of which we are interested by the following 4:
+- residencia_provincia_nombre: name of the province of the corresponding record. 
+- clasificacion_resumen: tells whether a record corresponds to a confirmed, suspected, discarted or probable case. 
+- fecha_inicio_sintomas: date of symptom onset, as informed by the patient.
+- fecha_apertura: date the report of a record on the system. 
+
+## Data Exploring
+The data is explored on the `1_explore_cases.R` of the `R` folder of the project. First, the data is uploaded using the function `fread` of the `data.table` library, which supports the reading of large files. After importing, we identify possible values for all values of interest. Firstly, `residencia_provincia_nombre` can take on all names of the 24 Argentinian provinces plus an unspecified value coined `SIN ESPECIFICAR` when the province is not specified in the offical database. Secondly, `clasificacion_resumen` can be: Confirmado, Descartado, Probable or Sospechado. Regarding dates, if we filter for 2020 reports, both `fecha_inicio_sintomas` and `fecha_apertura` can take on all values between January 1st 2020 and December 31st 2020. It is important to remark that NA values can be found in the `fecha_inicio_sintomas` column. 
+
+Since no NAs can be found in `fecha_apertura`, it is interesting to investigate the relationship between this date and the date of first symptom onset. This can give us some hints on how to replace missing `fecha_inicio_sintomas` values. This is done in the following plot, which represents an histogram of the difference `fecha_apertura - fecha_inicio_sintomas`, measured in days. Furthermore, we plot the mean of this difference as well as the interval defined by its standard deviation.
+
+```{r, out.width = "50%", echo=FALSE, fig.align='center',fig.cap="Histogram of difference between date of report and date of symptom onset, with mean and standard deviation"}
+# two figs side by side
+knitr::include_graphics(c("../figs/dates_diff.png"))
+```
+
+Here, we can observe that the distribution of differences is not symmetric. That is, the date of report in the system is usually later than the date of symptom onset, which makes intuitive sense. The mean of this distribution is about 5 days, whereas the mean is approximately 8 days. 
+
+## Data Processing
+The data is processed in script `2_process_data.R`. Firstly, it is loaded in a similar manner as in the previous script of our workflow. Then, we apply a filter to get confirmed cases with `clasificacion_resumen = Confirmado` and with report and symptom onset dates in 2020. Since some values of `fecha_inicio_sintomas` are missing, we replace them by a random date in between the corresponding reporting date and 8 days before. This was the standard used in my group during my thesis. However, upon looking at the plot from the previous section, some modifications could be made.
+
+Once there are no NAs present, script `3_get_tseries_cases.R` obtains the time series of new cases per day by province and arranges them in a 24 x 365 matrix. This makes sense since there are 24 provinces and 365 days in 2020. Finally, we sum dates every 14 days using external function `get_infected`. This gives us time series of estimated infected by province, since initially the contagious period (and therefore, the imposed isolation period) was estimated to be 14 days. Processed data are saved in file `cases_processed.csv` of `data/raw` folder.
+
+As a result, we save this matrix of infected per day per province in file `cases_provs.csv`, along with two extra files: one `cases_names_provs.csv` containing the order of provinces within the matrix and one `cases_dates_provs.csv` containing the order of dates. All this files can be found in the `outputs` folder of the project. 
+
+## Computing Correlations and Lags
+The `4_compute_corr_cases.R` script is dedicated to the calculations of the actual lags and correlations between time series using the outputs generated in the last section. In order to calculate this quantities, we use the function `lagged_correlations.R` which receives the matrix of the time series and returns two matrices: one for the lags and one for correlations. 
+
+This function does two loops to obtain every possible combination of pairs of provinces. For each pair, it calculates correlations by shifting one series with respect to the other by a number of days. Afterwards, it defines the lag between provinces as the shift in days for which correlation is maximum, and that maximum correlation as the actual correlation. 
+
+The results of this script, the correlation and lags matrices, are saved `outputs` folder in files `cases_corrs_provs.csv` and `cases_lags_provs.csv` respectively.
+
+## Analysis of results
+
+### Correlations between provinces
+
+```{r, echo=FALSE, out.width = "40%", out.height = "40%", fig.show = 'hold', fig.align='center', fig.cap = "Heatmaps of correlation matrices including and excluding the Formosa province, which seems atypical."}
+# two figs side by side
+knitr::include_graphics(c("../figs/cases_corrs.png",
+                   "../figs/cases_corrs_sf.png"))
+```
+
+```{r, echo=FALSE, out.width = "40%", out.height = "40%", fig.show = 'hold', fig.align='center', fig.cap = "Mean correlation for each province, including and excluding the province of Formosa."}
+# two figs side by side
+knitr::include_graphics(c("../figs/cases_mcorrs.png",
+                   "../figs/cases_mcorrs_sf.png"))
+```
+
+### Lags between provinces
+
+```{r, echo=FALSE, out.width = "40%", out.height = "40%", fig.show = 'hold', fig.align='center', fig.cap = "Left: Heatmap of lag matrix for all provinces. Right: Mean lag for each province."}
+# two figs side by side
+knitr::include_graphics(c("../figs/cases_lags.png",
+                   "../figs/cases_mlags.png"))
+```
+
+## References 
