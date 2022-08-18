@@ -1,5 +1,7 @@
 # Correlation Analysis for initial propagation of COVID-19 in Argentina
 
+** Author: Denise Stefania Cammarota **
+
 ## Theoretical background and Motivation 
 During my [master thesis](http://ricabib.cab.cnea.gov.ar/1049/) on COVID-19 propagation, it was remarked that Argentinian provinces (administrative divisions similar to states) seemed to drive the epidemiological dynamics during the start of the pandemic in 2020. For example, the province corresponding to the Capital, as well as some northern provinces seemed to have peaks that preceded those of the rest of the country. This is interesting for many reasons like predicting the existence in peaks in other places after observing the dynamics of a province, or predicting which connections between provinces are more important during the propagation of COVID-19 (or any other disease). Therefore, we started to study whether it was possible to quantify this type of relationship between provinces. To do that, we chose to use lagged cross-correlations of time series of different provinces. This is a standard way of computing relationships between heterogeneous epidemic dynamics, specially with small datasets. As a result, we expect to get matrices of correlations and lags between provinces. 
 
@@ -58,7 +60,7 @@ project/
 ```
 
 -  The `data` folder contains two subfolders with raw and processed data. The `raw` data folder is not found on the repository, since it contains the total cases file, whose size is too big to be uploaded to GitHub. The `processed` subfolder contains processed cases and time series data. 
-- The `docs` folder contains markdown files. In this case, the resulting report can be found in this folder. 
+- The `docs` folder contains markdown and html files. In this case, the resulting report can be found in this folder. 
 - The `fct` folder contains custom R functions in order to process and analyze the data. 
 - The `figs` folder contains figures obtained from data analysis. 
 - The `outputs` folder contains important outputs generated from our scripts. In this case, the time series of provinces with the corresponding information on provinces names and dates, along with the correlations and lags matrices can be found here. 
