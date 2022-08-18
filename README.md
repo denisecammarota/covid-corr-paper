@@ -23,8 +23,7 @@ As it was previously stated in the first section, the relationship between the e
 The dataset of confirmed cases is the official dataset provided by the Argentinian Ministry of Health to this day. The dataset is periodically updated in [this link](http://datos.salud.gob.ar/dataset/covid-19-casos-registrados-en-la-republica-argentina/archivo/fd657d02-a33a-498b-a91b-2ef1a68b8d16). However, the one I am using was downloaded from that same link on Saturday 13th of August of 2022, and can be found in [this link](https://drive.google.com/file/d/1j1QXQZu60LGApLWroKqafhmUa9XdE-m7/view?usp=sharing) of my personal Drive, since the official sites updates the dataset but leaves no record of previous ones. Even though I use my local copy of the dataset to perform all analysis, I haven't uploaded it to GitHub since its size is about 6 GB.  
 
 ## Requirements 
-
-Apart from base R, the following libraries need to be installed in order to run all scripts:
+Windows, Linux or MacOS with R installed, at least 8GB of RAM to explore and process the raw data. Apart from base R, the following libraries need to be installed in order to run all scripts:
 ```
 dplyr
 data.table
