@@ -3,8 +3,9 @@
 .RData
 .Ruserdata
 
-#all html files (related to markdowns)
+#all html and pdf files (related to markdowns)
 *.html
+*.pdf
 
 #all zip files
 *.zip
