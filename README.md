@@ -1,6 +1,6 @@
 # Correlation Analysis for initial propagation of COVID-19 in Argentina
 
-** Author: Denise Stefania Cammarota **
+**Author: Denise Stefania Cammarota**
 
 ## Theoretical background and Motivation 
 During my [master thesis](http://ricabib.cab.cnea.gov.ar/1049/) on COVID-19 propagation, it was remarked that Argentinian provinces (administrative divisions similar to states) seemed to drive the epidemiological dynamics during the start of the pandemic in 2020. For example, the province corresponding to the Capital, as well as some northern provinces seemed to have peaks that preceded those of the rest of the country. This is interesting for many reasons like predicting the existence in peaks in other places after observing the dynamics of a province, or predicting which connections between provinces are more important during the propagation of COVID-19 (or any other disease). Therefore, we started to study whether it was possible to quantify this type of relationship between provinces. To do that, we chose to use lagged cross-correlations of time series of different provinces. This is a standard way of computing relationships between heterogeneous epidemic dynamics, specially with small datasets. As a result, we expect to get matrices of correlations and lags between provinces. 
