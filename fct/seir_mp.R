@@ -18,16 +18,16 @@ seir_mp <- function(time,state,pars){
     # population of each province
     N <- S + E + I + R
     # auxiliary quantities
-    aux_S <- matrix(0,1,n_provs)
-    aux_E <- matrix(0,1,n_provs)
-    aux_I <- matrix(0,1,n_provs)
-    aux_R <- matrix(0,1,n_provs)
+    aux_S <- matrix(0.0,1,n_provs)
+    aux_E <- matrix(0.0,1,n_provs)
+    aux_I <- matrix(0.0,1,n_provs)
+    aux_R <- matrix(0.0,1,n_provs)
     # calculating the diffusion term
     for(i in index_provs){
-      aux_S_2 <- 0
-      aux_E_2 <- 0
-      aux_I_2 <- 0
-      aux_R_2 <- 0
+      aux_S_2 <- 0.0
+      aux_E_2 <- 0.0
+      aux_I_2 <- 0.0
+      aux_R_2 <- 0.0
       for(j in index_provs){
         aux_S_2 <- aux_S_2 + A[i,j]*S[i]*(N[i]/N[j])
         aux_E_2 <- aux_E_2 + A[i,j]*E[i]*(N[i]/N[j])
@@ -40,8 +40,8 @@ seir_mp <- function(time,state,pars){
       aux_R[i] <- aux_R_2
     }
     # calculating derivatives
-    dS = -(beta[i]*S*I)/(N) + aux_S
-    dE = (beta[i]*S*I)/(N) - alpha*E + aux_E
+    dS = -(beta*S*I)/(N) + aux_S
+    dE = (beta*S*I)/(N) - alpha*E + aux_E
     dI = alpha*E - gamma*I + aux_I
     dR = gamma*I + aux_R
     return(list(c(dS,dE,dI,dR)))
