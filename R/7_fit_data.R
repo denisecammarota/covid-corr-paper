@@ -2,6 +2,9 @@
 # distance to the time series data of provinces
 # Code developed by Denise Cammarota
 
+library(deSolve)
+source('fct/seir_mp.R')
+
 # Reading data ------------------------------------------------------------
 tseries_file <- 'outputs/cases_provs.csv' # time series data
 pop_file <- 'data/raw/provs_pop.csv' # provinces populations
@@ -21,10 +24,10 @@ n_provs <- length(pop) # number of provinces
 
 # sequence of times
 n_days <- dim(tseries)[2]
-times <- seq(1,n_days,1)
+times <- seq(1,2,1)
 
 # model parameters
-alpha <- 10**-3 # alpha for connectivity matrix
+alpha <- 1./5 # alpha for connectivity matrix
 beta <- rep(2./14,n_provs) # beta factors for each province
 gamma <- 1./14 # gamma inverse of recovery period
 
@@ -38,5 +41,7 @@ I <- t(as.matrix(condin[-1]))
 R <- matrix(0,nrow = 1, ncol = n_provs)
 state <- c(S = S, E = E, I = I, R = R)
 
-# Trying out the model ----------------------------------------------------
-length(seir_mp(times,state,pars)[1])
+# Integrating the model for these parameters -----------------------------
+a <- seir_mp(times,state,pars)
+output<-as.data.frame(ode(y=state,func = seir_mp,parms=pars,times = times))
+
