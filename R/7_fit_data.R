@@ -1,9 +1,9 @@
 # Fits the model of SEIR metapopulation dependent on population and
 # distance to the time series data of provinces
 # Code developed by Denise Cammarota
-
 library(deSolve)
 source('fct/seir_mp.R')
+source('fct/int_seir_mp.R')
 
 # Reading data ------------------------------------------------------------
 tseries_file <- 'outputs/cases_provs.csv' # time series data
@@ -16,7 +16,6 @@ condin <- read.csv(condin_file)
 
 # Computing connectivity matrix -------------------------------------------
 pop <- as.matrix(pop[-1]) # remove first column of indexes
-dist <- as.matrix(dist[,-1]) # remove first column of indexes
 n_provs <- length(pop) # number of provinces
 
 
@@ -41,7 +40,6 @@ I <- t(as.matrix(condin[-1]))
 R <- matrix(0,nrow = 1, ncol = n_provs)
 state <- c(S = S, E = E, I = I, R = R)
 
-# Integrating the model for these parameters -----------------------------
-a <- seir_mp(times,state,pars)
-output<-as.data.frame(ode(y=state,func = seir_mp,parms=pars,times = times))
+# Sending for model fitting ----------------------------------------------
+int_seir_mp(time = times,state = state,pars = pars)
 
