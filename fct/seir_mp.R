@@ -29,10 +29,10 @@ seir_mp <- function(time,state,pars){
       aux_I_2 <- 0.0
       aux_R_2 <- 0.0
       for(j in index_provs){
-        aux_S_2 <- aux_S_2 + A[i,j]*S[i]*(N[i]/N[j])
-        aux_E_2 <- aux_E_2 + A[i,j]*E[i]*(N[i]/N[j])
-        aux_I_2 <- aux_I_2 + A[i,j]*I[i]*(N[i]/N[j])
-        aux_R_2 <- aux_R_2 + A[i,j]*R[i]*(N[i]/N[j])
+        aux_S_2 <- aux_S_2 + A[i,j]*S[j]*(N[i]/N[j])
+        aux_E_2 <- aux_E_2 + A[i,j]*E[j]*(N[i]/N[j])
+        aux_I_2 <- aux_I_2 + A[i,j]*I[j]*(N[i]/N[j])
+        aux_R_2 <- aux_R_2 + A[i,j]*R[j]*(N[i]/N[j])
       }
       aux_S[i] <- aux_S_2
       aux_E[i] <- aux_E_2
