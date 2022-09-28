@@ -17,6 +17,7 @@ ggplot2
 reshape2
 matrixStats
 deSolve
+minpack.lm
 ```
 These can be installed by running the following commands in an R terminal:
 
@@ -27,6 +28,7 @@ install.packages("ggplot2")
 install.packages("reshape2")
 install.packages("matrixStats")
 install.packages("deSolve")
+install.packages("minpack.lm")
 ```
 
 ## Project structure
