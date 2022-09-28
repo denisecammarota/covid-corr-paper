@@ -6,6 +6,7 @@ seir_mp <- function(time,state,pars){
   # loading the connectivity matrix
   file_A <- './outputs/mat_dist_pop.csv'
   A <- as.matrix(read.csv(file_A))
+  A <- A[,-1]
   with(as.list(c(state,pars)),{
     # defining important parameters
     n_provs <- length(state)/4 # number of provinces
