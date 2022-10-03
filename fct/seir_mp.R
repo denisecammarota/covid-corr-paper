@@ -16,6 +16,7 @@ seir_mp <- function(time,state,pars){
     E <- matrix(state[(n_provs+1):(2*n_provs)], nrow = 1)
     I <- matrix(state[((2*n_provs)+1):(3*n_provs)], nrow = 1)
     R <- matrix(state[((3*n_provs)+1):(4*n_provs)], nrow = 1)
+    beta <- pars[1:n_provs]
     # population of each province
     N <- S + E + I + R
     # auxiliary quantities
