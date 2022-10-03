@@ -2,28 +2,22 @@
 # distance to the time series data of provinces
 # Code developed by Denise Cammarota
 library(deSolve)
+library(minpack.lm)
 source('fct/seir_mp.R')
 source('fct/int_seir_mp.R')
 
 # Reading data ------------------------------------------------------------
 tseries_file <- 'outputs/cases_provs.csv' # time series data
-pop_file <- 'data/raw/provs_pop.csv' # provinces populations
-condin_file <- 'data/raw/provs_condinit.csv' # provinces initial conditions
 
 tseries <- read.csv(tseries_file)
-pop <- read.csv(pop_file)
-condin <- read.csv(condin_file)
 
-# Computing connectivity matrix -------------------------------------------
-pop <- as.matrix(pop[-1]) # remove first column of indexes
-n_provs <- length(pop) # number of provinces
-
+n_provs <- dim(tseries)[1] # number of provinces
 
 # Defining initial parameters --------------------------------------------
 
 # sequence of times
 n_days <- dim(tseries)[2]
-times <- seq(1,2,1)
+T <- seq(1,n_days,1)
 
 # model parameters
 alpha <- 1./5 # alpha for connectivity matrix
@@ -31,15 +25,19 @@ beta <- rep(2./14,n_provs) # beta factors for each province
 gamma <- 1./14 # gamma inverse of recovery period
 
 # parameters of the model
-pars <- c(alpha = alpha, beta = beta, gamma = gamma)
+pars <- c(beta = beta, alpha = alpha, gamma = gamma)
 
-# Defining initial conditions ---------------------------------------------
-S <- t(pop)
-E <- matrix(0,nrow = 1, ncol = n_provs)
-I <- t(as.matrix(condin[-1]))
-R <- matrix(0,nrow = 1, ncol = n_provs)
-state <- c(S = S, E = E, I = I, R = R)
 
 # Sending for model fitting ----------------------------------------------
-int_seir_mp(time = times,state = state,pars = pars)
+#int_seir_mp(time = times,state = state,pars = pars)
+
+# residuals calculation
+fcn <- function(p, T, N, fcall){
+  (N - do.call("fcall", c(list(T = T), as.list(p))))
+}
+
+# fitting
+out <- nls.lm(par = pars, fn = fcn,
+              fcall = int_seir_mp,
+              T = T, N = tseries, control = nls.lm.control(nprint=1))
 
