@@ -2,7 +2,7 @@
 # with a connectivity matrix calculated elsewhere
 # Code developed by Denise Cammarota
 
-seir_mp <- function(time,state,pars){
+seir_mp <- function(T,state,pars){
   # loading the connectivity matrix
   file_A <- './outputs/mat_dist_pop.csv'
   A <- as.matrix(read.csv(file_A))
