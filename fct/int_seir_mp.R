@@ -23,6 +23,8 @@ int_seir_mp <- function(pars){
   out <- matrix(out,ncol=ncol(out),dimnames = NULL)
   out <- t(out)
   out <- out[25:48,]
+  print(dim(out))
+  print(dim(tseries_2))
   # computing difference for fitting purposes
   diff <- out - tseries_2
 }

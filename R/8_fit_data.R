@@ -20,7 +20,7 @@ times <- seq(1,n_days,1)
 
 # model parameters
 alpha <- 1./5 # alpha for connectivity matrix
-beta <- rep(2./14,n_provs) # beta factors for each province
+beta <- 2./14 # beta factors for each province
 gamma <- 1./14 # gamma inverse of recovery period
 
 # parameters of the model
@@ -29,3 +29,4 @@ pars <- c(beta = beta, alpha = alpha, gamma = gamma)
 
 # Sending for model fitting ----------------------------------------------
 fitval=nls.lm(par=pars,fn=int_seir_mp)
+

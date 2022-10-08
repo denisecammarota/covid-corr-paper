@@ -2,15 +2,14 @@
 # with a connectivity matrix calculated elsewhere
 # Code developed by Denise Cammarota
 
-seir_mp <- function(T,state,pars){
+seir_mp_optim <- function(time, state, pars, n_days, n_provs){
   # loading the connectivity matrix
   file_A <- './outputs/mat_dist_pop.csv'
   A <- as.matrix(read.csv(file_A))
   A <- A[,-1]
   with(as.list(c(state,pars)),{
     # defining important parameters
-    n_provs <- length(state)/4 # number of provinces
-    index_provs <- seq(1,n_provs,1) # vector of provinces
+    beta <- pars[1:n_provs]
     # separating S E I and R
     S <- matrix(state[1:n_provs], nrow = 1)
     E <- matrix(state[(n_provs+1):(2*n_provs)], nrow = 1)
@@ -24,12 +23,12 @@ seir_mp <- function(T,state,pars){
     aux_I <- matrix(0.0,1,n_provs)
     aux_R <- matrix(0.0,1,n_provs)
     # calculating the diffusion term
-    for(i in index_provs){
+    for(i in seq(1,n_provs,1)){
       aux_S_2 <- 0.0
       aux_E_2 <- 0.0
       aux_I_2 <- 0.0
       aux_R_2 <- 0.0
-      for(j in index_provs){
+      for(j in seq(1,n_provs,1)){
         aux_S_2 <- aux_S_2 + A[i,j]*S[j]*(N[i]/N[j])
         aux_E_2 <- aux_E_2 + A[i,j]*E[j]*(N[i]/N[j])
         aux_I_2 <- aux_I_2 + A[i,j]*I[j]*(N[i]/N[j])
@@ -49,5 +48,3 @@ seir_mp <- function(T,state,pars){
   }
   )
 }
-
-
