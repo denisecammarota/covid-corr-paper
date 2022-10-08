@@ -2,11 +2,8 @@
 # with a connectivity matrix calculated elsewhere
 # Code developed by Denise Cammarota
 
-seir_mp_optim <- function(time, state, pars, n_days, n_provs){
+seir_mp_optim <- function(time, state, pars, A, n_days, n_provs){
   # loading the connectivity matrix
-  file_A <- './outputs/mat_dist_pop.csv'
-  A <- as.matrix(read.csv(file_A))
-  A <- A[,-1]
   with(as.list(c(state,pars)),{
     # defining important parameters
     beta <- pars[1:n_provs]
