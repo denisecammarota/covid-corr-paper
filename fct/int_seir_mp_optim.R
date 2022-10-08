@@ -6,14 +6,13 @@
 int_seir_mp_optim <- function(pars, time, tseries_2, state, matA, n_days, n_provs){
   # calculating the ode solving values
   out <- ode(y=state,func = seir_mp_optim,parms=pars,
-             times = time)
+             times = time, A = matA, n_days= n_days, n_provs = n_provs)
   out <- out[,-1]
   out <- as.matrix(out)
   out <- matrix(out,ncol=ncol(out),dimnames = NULL)
   out <- t(out)
   out <- out[25:48,]
-  print(dim(out))
-  print(dim(tseries_2))
+  print(dim(out-tseries_2))
   # computing difference for fitting purposes
-  diff <- out - tseries_2
+  diff <- sum(abs(out - tseries_2))
 }

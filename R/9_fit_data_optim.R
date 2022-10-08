@@ -26,6 +26,16 @@ A <- A[,-1] # 24 x 24 matrix
 
 # Preparing for fit -----------------------------------------------
 n_days <- dim(tseries_2)[2]
-times <- seq(0,n_days,1)
+times <- seq(1,n_days,1)
+alpha <- 1./5 # alpha for connectivity matrix
+beta <- 2./14 # beta factors for each province
+gamma <- 1./14 # gamma inverse of recovery period
+pars <- c(beta = beta, alpha = alpha, gamma = gamma)
 
 # Doing the fit ---------------------------------------------------
+fitoptim <- optim(par = pars, fn = int_seir_mp_optim,
+                  time = times, tseries_2 = tseries_2,
+                  state = state, matA = A, n_days = n_days,
+                  n_provs = n_provs)
+
+
