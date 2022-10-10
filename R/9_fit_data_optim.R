@@ -2,6 +2,8 @@
 # distance to the time series data of provinces with optim function
 # Code developed by Denise Cammarota
 library(deSolve)
+library(optimParallel)
+library(parallel)
 source('fct/seir_mp_optim.R')
 source('fct/int_seir_mp_optim.R')
 
@@ -30,12 +32,21 @@ times <- seq(1,n_days,1)
 alpha <- 1./5 # alpha for connectivity matrix
 beta <- 2./14 # beta factors for each province
 gamma <- 1./14 # gamma inverse of recovery period
-pars <- c(beta = beta, alpha = alpha, gamma = gamma)
+g <- 0.001 # proportionality constant g
+pars <- c(beta = beta, alpha = alpha, g = g)
+
+
+
+cl <- makeCluster(detectCores()) # set the number of processor cores
+clusterExport(cl=cl, c('seir_mp_optim', 'int_seir_mp_optim',
+                       'times', 'tseries_2', 'state', 'A',
+                       'n_days','n_provs'))
+setDefaultCluster(cl=cl) # set 'cl' as default cluster
 
 # Doing the fit ---------------------------------------------------
 fitoptim <- optim(par = pars, fn = int_seir_mp_optim,
                   time = times, tseries_2 = tseries_2,
                   state = state, matA = A, n_days = n_days,
-                  n_provs = n_provs)
+                  n_provs = n_provs, gamma = gamma)
 
 
