@@ -2,11 +2,11 @@
 # with a connectivity matrix calculated elsewhere
 # Code developed by Denise Cammarota
 
-seir_mp_optim <- function(time, state, pars, A, n_days, n_provs){
+sir_mp_optim <- function(time, state, pars, A, n_days, n_provs, gamma){
   # loading the connectivity matrix
   with(as.list(c(state,pars)),{
     # defining important parameters
-    #beta <- pars[1:n_provs]
+    beta <- pars[1:n_provs]
     # separating S E I and R
     S <- matrix(state[1:n_provs], nrow = 1)
     I <- matrix(state[((n_provs)+1):(2*n_provs)], nrow = 1)

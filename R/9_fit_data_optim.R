@@ -6,6 +6,8 @@ library(optimParallel)
 library(parallel)
 source('fct/seir_mp_optim.R')
 source('fct/int_seir_mp_optim.R')
+source('fct/sir_mp_optim.R')
+source('fct/int_sir_mp_optim.R')
 
 # Reading data ----------------------------------------------------
 
@@ -30,18 +32,11 @@ A <- A[,-1] # 24 x 24 matrix
 n_days <- dim(tseries_2)[2]
 times <- seq(1,n_days,1)
 alpha <- 1./5 # alpha for connectivity matrix
-beta <- 2./14 # beta factors for each province
+beta <- rep(2./14,n_provs) # beta factors for each province
 gamma <- 1./14 # gamma inverse of recovery period
 g <- 0.001 # proportionality constant g
 pars <- c(beta = beta, alpha = alpha, g = g)
 
-
-
-cl <- makeCluster(detectCores()) # set the number of processor cores
-clusterExport(cl=cl, c('seir_mp_optim', 'int_seir_mp_optim',
-                       'times', 'tseries_2', 'state', 'A',
-                       'n_days','n_provs'))
-setDefaultCluster(cl=cl) # set 'cl' as default cluster
 
 # Doing the fit ---------------------------------------------------
 fitoptim <- optim(par = pars, fn = int_seir_mp_optim,
@@ -49,4 +44,14 @@ fitoptim <- optim(par = pars, fn = int_seir_mp_optim,
                   state = state, matA = A, n_days = n_days,
                   n_provs = n_provs, gamma = gamma)
 
+fit_values <- fitoptim$par
 
+# Plotting results ------------------------------------------------
+fit_results <- deSolve::ode(y=state,func = seir_mp_optim,parms=fit_values,
+                            times = times, A = A, n_days= n_days, n_provs = n_provs, gamma = gamma)
+infected_results <- fit_results[,50:73]
+
+
+plot(tseries_2[9,])
+lines(infected_results[,9])
+dim(infected_results)

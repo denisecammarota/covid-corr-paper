@@ -11,12 +11,13 @@ condin <- read.csv(condin_file)
 # Defining initial conditions ---------------------------------------------
 pop <- as.matrix(pop[-1]) # remove first column of indexes
 S <- t(pop)
-E <- matrix(0,nrow = 1, ncol = n_provs)
+#E <- matrix(0,nrow = 1, ncol = n_provs)
 I <- t(as.matrix(condin[-1]))
 R <- matrix(0,nrow = 1, ncol = n_provs)
-state <- c(S = S, E = E, I = I, R = R)
+#state <- c(S = S, E = E, I = I, R = R)
+state <- c(S = S, I = I, R = R)
 
 # Saving initial conditions data ------------------------------------------
-write.csv(state,'outputs/initial_conditions.csv')
+write.csv(state,'outputs/initial_conditions_sir.csv')
 
 

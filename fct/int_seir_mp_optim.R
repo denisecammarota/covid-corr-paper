@@ -14,5 +14,5 @@ int_seir_mp_optim <- function(pars, time, tseries_2, state, matA, n_days, n_prov
   out <- out[49:72,]
   print(dim(tseries_2-out))
   # computing difference for fitting purposes
-  diff <- sum(abs(out - tseries_2))
+  diff <- sum((out - tseries_2)^2)
 }
