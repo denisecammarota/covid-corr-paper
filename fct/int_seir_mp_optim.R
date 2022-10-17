@@ -2,10 +2,11 @@
 # model for certain parameters.
 # Code developed by Denise Cammarota.
 source('fct/seir_mp_optim.R')
+source('fct/seir_mp_optim_matform.R')
 # Actual function that interests us ------------------------------
 int_seir_mp_optim <- function(pars, time, tseries_2, state, matA, n_days, n_provs, gamma){
   # calculating the ode solving values
-  out <- deSolve::ode(y=state,func = seir_mp_optim,parms=pars,
+  out <- deSolve::ode(y=state,func = seir_mp_optim_matform,parms=pars,
              times = time, A = matA, n_days= n_days, n_provs = n_provs, gamma = gamma)
   out <- out[,-1]
   out <- as.matrix(out)
@@ -14,5 +15,6 @@ int_seir_mp_optim <- function(pars, time, tseries_2, state, matA, n_days, n_prov
   out <- out[49:72,]
   print(dim(tseries_2-out))
   # computing difference for fitting purposes
-  diff <- sum((out - tseries_2)^2)
+  diff <- out - tseries_2
+  return(diff)
 }

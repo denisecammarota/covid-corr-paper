@@ -2,7 +2,7 @@
 # with a connectivity matrix calculated elsewhere
 # Code developed by Denise Cammarota
 
-seir_mp_optim <- function(time, state, pars, A, n_days, n_provs, gamma){
+seir_mp_optim <- function(time, state, pars, A, n_days, n_provs){
   # loading the connectivity matrix
   with(as.list(c(state,pars)),{
     # defining important parameters

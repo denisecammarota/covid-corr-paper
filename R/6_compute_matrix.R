@@ -19,7 +19,7 @@ mat_A <- matrix(0, n_provs, n_provs) # matrix of connectivity
 # cycling and computing each element
 for(i in seq(1, n_provs, 1)){
   for(j in seq(1, n_provs, 1)){
-    mat_A[i,j] <- ((pop[i]+pop[j])/total_pop)*(1/dist[i,j])
+    mat_A[i,j] <- (pop[i]+pop[j])*(1/total_pop)*(1/dist[i,j])
   }
 }
 
@@ -29,5 +29,13 @@ for(i in seq(1, n_provs, 1)){
   mat_A[i,i] <- -sum(mat_A[,i])
 }
 
+# dividing by population to create new matrix
+for(i in seq(1, n_provs, 1)){
+  for(j in seq(1, n_provs, 1)){
+    mat_A[i,j] <- mat_A[i,j]*(pop[i]/pop[j])
+  }
+}
+
 # Saving the corresponding matrix --------------------------------------
-write.csv(mat_A,'outputs/mat_dist_pop.csv')
+write.csv(mat_A,'outputs/mat_dist_pop_matform.csv')
+
