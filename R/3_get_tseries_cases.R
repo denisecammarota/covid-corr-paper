@@ -3,6 +3,7 @@
 
 # Loading of necessary libraries ---------------------------------
 library(dplyr)
+library(ggplot2)
 
 # Loading of necessary functions ---------------------------------
 source('fct/get_infected.R')
