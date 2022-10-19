@@ -4,13 +4,8 @@
 
 library(minpack.lm)
 library(ggplot2)
-source('fct/seir_mp_optim.R')
-source('fct/int_seir_mp_optim.R')
-source('fct/sir_mp_optim.R')
-source('fct/int_sir_mp_optim.R')
-source('fct/seir_mp_optim_matform.R')
-source('fct/sir_mp_optim_matform.R')
-
+source('fct/int_seir_mp_fix_optim.R')
+source('fct/seir_mp_fix_optim_matform.R')
 
 # Reading data ----------------------------------------------------
 
@@ -38,27 +33,26 @@ A <- A[,-1] # 24 x 24 matrix
 n_days <- dim(tseries_2)[2]
 times <- seq(1,n_days,1)
 alpha <- 1./5 # alpha for connectivity matrix
-beta <- rep(2./14,n_provs) # beta factors for each province
+beta <- 2./14 # beta factors for each province
 gamma <- 1./14 # gamma inverse of recovery period
 g <- 0.1 # proportionality constant g
 pars <- c(beta = beta, g = g)
 
-pars_lower <- rep(0,25)
+pars_lower <- rep(0,2)
 
 # Doing the fit ---------------------------------------------------
-fitoptim <- nls.lm(par = pars, fn = int_sir_mp_optim,
+fitoptim <- nls.lm(par = pars, fn = int_seir_mp_fix_optim,
                    lower =  pars_lower, control = nls.lm.control(maxiter = 300),
-                  time = times, tseries_2 = tseries_2,
-                  state = state, matA = A, n_days = n_days,
-                  n_provs = n_provs, gamma = gamma)
+                   time = times, tseries_2 = tseries_2,
+                   state = state, matA = A, n_days = n_days,
+                   n_provs = n_provs, gamma = gamma)
 
 fit_values <- fitoptim$par
 
-# Saving fit results ------------------------------------------------
-fit_results <- deSolve::ode(y=state,func = sir_mp_optim_matform,parms=fit_values,
+# Plotting results ------------------------------------------------
+fit_results <- deSolve::ode(y=state,func = seir_mp_fix_optim_matform,parms=fit_values,
                             times = times, A = A, n_days= n_days, n_provs = n_provs, gamma = gamma)
 infected_results <- fit_results[,26:49]
 
-infected_results <- data.frame(infected_results)
-
-write.csv(infected_results, "outputs/fit_res_sir_mp.csv")
+plot(tseries_2[15,])
+lines(infected_results[,15])

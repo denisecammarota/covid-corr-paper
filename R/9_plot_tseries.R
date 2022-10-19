@@ -5,6 +5,7 @@
 library(ggplot2)
 library(reshape2)
 library(tidyverse)
+library(latex2exp)
 
 # Reading time series data --------------------------------------
 tseries_file <- 'outputs/cases_provs.csv'
@@ -29,6 +30,39 @@ names <- rbind('Time', prov_name)
 colnames(tseries_total) <- names$x
 
 # Plotting time series ------------------------------------------
+
+# plotting not normaized time series
 tseries_total = as.data.frame(tseries_total)
-df <- melt(tseries_total ,  id.vars = 'Time', variable.name = 'series')
-ggplot(df, aes(Time,value)) + geom_line(aes(colour = series))
+
+df <- melt(tseries_total ,  id.vars = 'Time', variable.name = 'Provinces')
+
+ggplot(df, aes(Time,value)) +
+  geom_line(aes(colour = Provinces), size = 1.25) +
+  theme_bw() + xlab("t (days)") + ylab(TeX("$I_{i}(t)$")) +
+  theme(legend.key.height = unit(0.2, 'cm'),
+        legend.key.width = unit(0.2, 'cm'),
+        text = element_text(size=12)) +
+  guides(fill=guide_legend(ncol = 1))
+
+ggsave('figs/tseries.pdf', width = 8.73, height = 3.79)
+
+# plotting normalized time series
+tseries_total_norm <- tseries_total
+aux_nprovs <- dim(tseries_total)[2]
+for(i in seq(2,25,1)){
+  aux_max <- max(tseries_total_norm[i])
+  tseries_total_norm[i] <- tseries_total_norm[i]/aux_max
+}
+
+df_norm <- melt(tseries_total_norm, id.vars = 'Time', variable.name = 'Provinces')
+
+ggplot(df_norm, aes(Time,value)) +
+  geom_line(aes(colour = Provinces), size = 1.25) +
+  theme_bw() + xlab("t (days)") + ylab(TeX("$I_{i}(t)$ (normalized)")) +
+  theme(legend.key.height = unit(0.2, 'cm'),
+        legend.key.width = unit(0.2, 'cm'),
+        text = element_text(size=12)) +
+  guides(fill=guide_legend(ncol = 1))
+
+ggsave('figs/tseries_norm.pdf', width = 8.73, height = 3.79)
+
