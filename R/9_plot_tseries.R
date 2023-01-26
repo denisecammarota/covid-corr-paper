@@ -66,3 +66,6 @@ ggplot(df_norm, aes(Time,value)) +
 
 ggsave('figs/tseries_norm.pdf', width = 8.73, height = 3.79)
 
+
+
+

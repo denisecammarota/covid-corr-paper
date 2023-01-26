@@ -2,9 +2,11 @@
 # Code developed by Denise Cammarota.
 
 # Loading of necessary libraries ---------------------------------
+library(latex2exp)
 library(data.table)
 library(dplyr)
 library(ggplot2)
+
 
 # Loading of the necessary data ----------------------------------
 
@@ -89,17 +91,11 @@ sd_diff <- sd(dates_total_nna$dates_report_nna
 
 # plotting this difference in histogram with ggplot
 ggplot(dates_total_nna, aes(x= dates_report_nna - dates_start_nna)) +
-  geom_histogram(binwidth = 1) +
+  geom_histogram(binwidth = 1, fill = 'grey', color="black") +
   xlim(-5,15) +
-  geom_vline(aes(xintercept = mean_diff),
-             col='black',size=1) +
-  geom_vline(aes(xintercept = mean_diff + sd_diff),
-             col='red',size=1) +
-  geom_vline(aes(xintercept = mean_diff - sd_diff),
-             col='red',size=1) +
-  labs(x="fecha_apertura - fecha_inicio_sintomas",
-       y = "Counts", title =
-         "Histogram of fecha_apertura - fecha_inicio_sintomas") +
+  geom_vline(aes(xintercept = mean_diff),col = 'red', linetype = 'dashed', size=1) +
+  labs(x=TeX(r"(Date of upload - Date of symptom onset)"),
+       y = TeX(r"(Counts)")) +
   theme_bw() +
   theme(plot.title=element_text(size = 12,
                                 hjust = 0.5))

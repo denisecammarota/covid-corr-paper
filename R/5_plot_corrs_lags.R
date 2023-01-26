@@ -114,6 +114,30 @@ ggplot2::ggsave(filename = "figs/cases_lags.png",
                 width = 5.5,
                 height = 4.5)
 
+# Plot without Formosa ----------------------------------------
+
+lags_nf <- lags[-9, ]
+lags_nf <- lags_nf[ ,-9]
+
+melt_lags_nf <- melt(lags_nf)
+
+# doing the same plot
+ggplot(melt_lags_nf, aes(x = Var2, y = Var1)) +
+  geom_raster(aes(fill = value)) +
+  scale_fill_viridis_c(option='magma') + # viridis (colorblind ok)
+  labs(x="Provinces", y = "Provinces", title =
+         "Provinces Lags (minus Formosa)") +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 9, angle = 90,
+                                   vjust = 0.6),
+        axis.text.y = element_text(size = 9),
+        plot.title=element_text(size = 11, hjust = 0.5))
+
+ggplot2::ggsave(filename = "figs/cases_lags_sf.png",
+                dpi = 300,
+                units = "in",
+                width = 5.5,
+                height = 4.5)
 
 
 # Computing and plotting mean values --------------------------
@@ -211,4 +235,31 @@ ggplot2::ggsave(filename = "figs/cases_mlags.png",
                 height = 4.5)
 
 
+# taking out formosa to plot again
+mean_lags_sf <- data.frame(mean_lags[-9, ]) # eliminating Formosa mean
+sd_lags_sf <- sd_lags[-9] # eliminating Formosa sd
+seq_provs_sf <- seq(1, ncol(lags)-1, 1) # new province seq for xticks
+names(mean_lags_sf) <- 'rowMeans.lags.' # correcting new name
 
+
+ggplot(mean_lags_sf,
+       aes(x = seq_provs_sf, y = rowMeans.lags.)) +
+  geom_point(size=3) +
+  geom_line(size=1) +
+  theme_bw() +
+  scale_x_discrete("Province", seq_provs_sf,
+                   pnames[-9, 2], as.factor(seq_provs_sf)) +
+  labs(x="Province", y = "Mean Lag", title =
+         "Mean Province Lag (minus Formosa)") +
+  theme(plot.title=element_text(size = 12,
+                                hjust = 0.5),
+        axis.text.x = element_text(size = 9, angle = 90,
+                                   vjust = 0.6)) +
+  geom_errorbar(aes(ymin = rowMeans.lags. - sd_lags_sf,
+                    ymax = rowMeans.lags. + sd_lags_sf))
+
+ggplot2::ggsave(filename = "figs/cases_mlags_sf.png",
+                dpi = 300,
+                units = "in",
+                width = 5.5,
+                height = 4.5)
