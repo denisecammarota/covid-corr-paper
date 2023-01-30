@@ -52,6 +52,8 @@ min(data$fecha_inicio_sintomas[is.na(data$fecha_inicio_sintomas)
                                != TRUE])
 
 # get interesting dates, only confirmed in 2020
+data_complete <- data.frame(data) # save copy of complete data
+
 data <- filter(data, clasificacion_resumen == 'Confirmado'
                 & fecha_apertura < '2021-01-01'
                 & fecha_inicio_sintomas < '2021-01-01')
@@ -105,8 +107,6 @@ ggplot2::ggsave(filename = "figs/dates_diff.png",
                 units = "in",
                 width = 4.5,
                 height = 3.0)
-
-
 
 
 
