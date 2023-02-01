@@ -1,5 +1,6 @@
 # Reads data, computes and saves connectivity matrix depending on
 # distance and population (the best fitted one)
+# modified from original to exclude Formosa from calculations
 # Code developed by Denise Cammarota
 
 # Reading data ------------------------------------------------------------
@@ -12,6 +13,14 @@ pop <- read.csv(pop_file)
 # Computing connectivity matrix -------------------------------------------
 pop <- as.matrix(pop[-1]) # remove first column of indexes
 dist <- as.matrix(dist[,-1]) # remove first column of indexes
+
+# removing Formosa
+pop <- pop[-9]
+dist <- dist[-9,]
+dist <- dist[,-9]
+pop <- as.matrix(pop)
+dist <- as.matrix(dist)
+
 n_provs <- length(pop) # number of provinces
 total_pop <- as.numeric(colSums(pop)) # total argentinian population
 mat_A <- matrix(0, n_provs, n_provs) # matrix of connectivity
@@ -19,7 +28,7 @@ mat_A <- matrix(0, n_provs, n_provs) # matrix of connectivity
 # cycling and computing each element
 for(i in seq(1, n_provs, 1)){
   for(j in seq(1, n_provs, 1)){
-    mat_A[i,j] <- 1
+    mat_A[i,j] <- ((pop[i]+pop[j])/(total_pop))*(1/(dist[i,j]))
   }
 }
 
@@ -37,5 +46,5 @@ for(i in seq(1, n_provs, 1)){
 }
 
 # Saving the corresponding matrix --------------------------------------
-write.csv(mat_A,'outputs/mat_neutral_matform.csv')
+write.csv(mat_A,'outputs/mat_dist_pop_matform.csv')
 
