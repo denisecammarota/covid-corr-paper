@@ -11,7 +11,7 @@ library(latex2exp)
 source('fct/seir_mp_optim.R')
 source('fct/int_seir_mp_optim.R')
 source('fct/sir_mp_optim.R')
-source('fct/int_sir_mp_optim.R')
+source('fct/int_sir_mp_fix_optim.R')
 source('fct/seir_mp_optim_matform.R')
 source('fct/sir_mp_optim_matform.R')
 
@@ -39,41 +39,39 @@ state <- as.numeric(state[,2]) # 72 length vector
 state <- state[-c(9,33,57)]
 
 ## Connectivity matrix data ---------------------------------------
-file_A <- './outputs/mat_dist_matform.csv'
+file_A <- './outputs/mat_dist_pop_matform.csv'
 A <- as.matrix(read.csv(file_A))
 A <- A[,-1] # 23 x 23 matrix
 
 # Preparing for fit -----------------------------------------------
 n_days <- dim(tseries_2)[2]
 times <- seq(1,n_days,1)
-
-alpha <- 1./5 # alpha for connectivity matrix
-beta <- rep(2./14,n_provs) # beta factors for each province
+beta <- 2./14 # beta factors for each province
 gamma <- 1./14 # gamma inverse of recovery period
 g <- 0.1 # proportionality constant g
 pars <- c(beta = beta, g = g)
 
-pars_lower <- rep(0,24)
+pars_lower <- rep(0,2)
 
 # Doing the fit ---------------------------------------------------
-fitoptim <- nls.lm(par = pars, fn = int_sir_mp_optim,
-                     lower =  pars_lower, control = nls.lm.control(maxiter = 300),
-                     time = times, tseries_2 = tseries_2,
-                     state = state, matA = A, n_days = n_days,
-                     n_provs = n_provs, gamma = gamma)
+fitoptim <- nls.lm(par = pars, fn = int_sir_mp_fix_optim,
+                   lower =  pars_lower, control = nls.lm.control(maxiter = 300),
+                   time = times, tseries_2 = tseries_2,
+                   state = state, matA = A, n_days = n_days,
+                   n_provs = n_provs, gamma = gamma)
 
 fit_values <- fitoptim$par
 
 
 # Saving fit results ------------------------------------------------
-fit_results <- deSolve::ode(y=state,func = sir_mp_optim_matform,parms=fit_values,
+fit_results <- deSolve::ode(y=state,func = sir_mp_optim,parms=fit_values,
                             times = times, A = A, n_days= n_days, n_provs = n_provs, gamma = gamma)
 infected_results <- fit_results[,25:47]
 
 infected_results <- data.frame(infected_results)
 write.csv(infected_results, "outputs/fit_res_sir_mp.csv")
 
-# Preparing for plot of results ----------------------------------------
+# ggplot plots of results ----------------------------------------
 # transpose the data
 tseries_2 <- t(tseries_2)
 tseries_2 <- data.frame(tseries_2)
@@ -93,7 +91,7 @@ rownames(prov_names) <- NULL
 prov_names <- prov_names$x
 prov_names <- prov_names[-9]
 
-# Plotting fit and original data -------------------------------
+# plotting
 
 # we plot the first one
 tseries_tmp <- cbind(tseries_2[,1],tseries_2[,2])
@@ -137,55 +135,3 @@ for(i in seq(3,n_provs+1,1)){
 }
 
 p <- p +  plot_layout(ncol = 4)
-
-# saved as pdf since it is a huge image
-
-# Plotting beta for each province --------------------------------
-
-# summary of fit with coefficients and std
-s <- summary(fitoptim)
-sc <- s$coefficients
-sc <- data.frame(sc)
-
-# coefficient and std
-coeff_sc <- sc['Estimate']
-std_sc <- sc['Std..Error']
-
-# saving g value
-g_sc <- coeff_sc[24,]
-g_std_sc <- std_sc[24,]
-
-# beta for each province
-coeff_sc <- coeff_sc[-24,]
-std_sc <- std_sc[-24,]
-
-
-# preparing for plot
-pars_sc <- data.frame(coeff_sc,std_sc)
-pars_sc <- cbind(prov_names,pars_sc)
-
-# plotting beta for each province
-ggplot(pars_sc, aes(x = prov_names, y=coeff_sc, group = 1)) +
-  geom_line(size=1) +
-  geom_point(size = 2) +
-  geom_errorbar(aes(ymin = coeff_sc - std_sc,
-                    ymax = coeff_sc + std_sc),
-                width=0.5, size = 1) +
-  theme_bw() +
-  xlab(TeX("Province")) +
-  ylab(TeX("$\\beta_{i}$")) +
-  theme(axis.text.x = element_text(size = 14, angle = 90,
-                                   vjust = 0.7, hjust = 0.7),
-        axis.text.y = element_text(size = 14),
-        axis.title=element_text(size=18))
-
-ggsave('figs/beta_provs.pdf', height = 6.0, width = 10.0,
-       units = "in")
-
-# Saving coefficients from fitting -----------------------------
-g_tmp <- data.frame(cbind('All',g_sc,g_std_sc))
-names(g_tmp) <- names(pars_sc)
-pars_sc <- rbind(pars_sc,g_tmp)
-
-write.csv(pars_sc, "outputs/bestfit_parameters.csv",
-          row.names=FALSE, quote=FALSE)
