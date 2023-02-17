@@ -6,6 +6,7 @@ library(ggplot2) # plot
 library(reshape2) # melt function
 library(dplyr)
 library(matrixStats)
+library(latex2exp)
 
 # Loading of data ---------------------------------------------
 
@@ -38,14 +39,14 @@ melt_corrs <- melt(corrs)
 # doing the actual plot
 ggplot(melt_corrs, aes(x = Var2, y = Var1)) +
   geom_raster(aes(fill = value)) +
-  scale_fill_viridis_c(option='magma') + # viridis (colorblind ok)
-  labs(x="Provinces", y = "Provinces", title =
-      "Provinces Correlations") +
+  scale_fill_viridis_c(option='magma',
+                       name = TeX('$\\chi_{ij}$', italic = TRUE)) + # viridis (colorblind ok)
+  labs(x="Provinces", y = "Provinces") +
   theme_bw() +
-  theme(axis.text.x = element_text(size = 9, angle = 90,
+  theme(axis.text.x = element_text(size = 11, angle = 90,
                                    vjust = 0.6),
-        axis.text.y = element_text(size = 9),
-        plot.title=element_text(size = 11, hjust = 0.5))
+        axis.text.y = element_text(size = 11),
+        legend.title = element_text(size=14))
 
 ggplot2::ggsave(filename = "figs/cases_corrs.png",
                 dpi = 300,
@@ -65,14 +66,14 @@ melt_corrs_nf <- melt(corrs_nf)
 # doing the same plot
 ggplot(melt_corrs_nf, aes(x = Var2, y = Var1)) +
   geom_raster(aes(fill = value)) +
-  scale_fill_viridis_c(option='magma') + # viridis (colorblind ok)
-  labs(x="Provinces", y = "Provinces", title =
-         "Provinces Correlations (minus Formosa)") +
+  scale_fill_viridis_c(option='magma',
+                       name = TeX('$\\chi_{ij}$', italic = TRUE)) + # viridis (colorblind ok)
+  labs(x="Provinces", y = "Provinces") +
   theme_bw() +
-  theme(axis.text.x = element_text(size = 9, angle = 90,
+  theme(axis.text.x = element_text(size = 11, angle = 90,
                                    vjust = 0.6),
-        axis.text.y = element_text(size = 9),
-        plot.title=element_text(size = 11, hjust = 0.5))
+        axis.text.y = element_text(size = 11),
+        legend.title = element_text(size=14))
 
 ggplot2::ggsave(filename = "figs/cases_corrs_sf.png",
                 dpi = 300,
@@ -99,14 +100,14 @@ melt_lags <- melt(lags)
 # doing the actual plot
 ggplot(melt_lags, aes(x = Var2, y = Var1)) +
   geom_raster(aes(fill = value)) +
-  scale_fill_viridis_c(option='magma')+ # viridis (colorblind ok)
-  labs(x="Provinces", y = "Provinces", title =
-      "Provinces Lags") +
+  scale_fill_viridis_c(option='magma',
+                       name = TeX('$\\tau_{ij}$', italic = TRUE))+ # viridis (colorblind ok)
+  labs(x="Provinces", y = "Provinces") +
   theme_bw() +
-  theme(axis.text.x = element_text(size = 9, angle = 90,
+  theme(axis.text.x = element_text(size = 11, angle = 90,
                                    vjust = 0.6),
-        axis.text.y = element_text(size = 9),
-        plot.title=element_text(size = 11, hjust = 0.5))
+        axis.text.y = element_text(size = 11),
+        legend.title = element_text(size=14))
 
 ggplot2::ggsave(filename = "figs/cases_lags.png",
                 dpi = 300,
@@ -124,14 +125,14 @@ melt_lags_nf <- melt(lags_nf)
 # doing the same plot
 ggplot(melt_lags_nf, aes(x = Var2, y = Var1)) +
   geom_raster(aes(fill = value)) +
-  scale_fill_viridis_c(option='magma') + # viridis (colorblind ok)
-  labs(x="Provinces", y = "Provinces", title =
-         "Provinces Lags (minus Formosa)") +
+  scale_fill_viridis_c(option='magma',
+                       name = TeX('$\\tau_{ij}$', italic = TRUE)) + # viridis (colorblind ok)
+  labs(x="Provinces", y = "Provinces") +
   theme_bw() +
-  theme(axis.text.x = element_text(size = 9, angle = 90,
+  theme(axis.text.x = element_text(size = 11, angle = 90,
                                    vjust = 0.6),
-        axis.text.y = element_text(size = 9),
-        plot.title=element_text(size = 11, hjust = 0.5))
+        axis.text.y = element_text(size = 11),
+        legend.title = element_text(size=14))
 
 ggplot2::ggsave(filename = "figs/cases_lags_sf.png",
                 dpi = 300,
@@ -157,12 +158,10 @@ ggplot(mean_corrs,
   theme_bw() +
   scale_x_discrete("Province", seq_provs,
                    pnames[, 2], as.factor(seq_provs)) +
-  labs(x="Province", y = "Mean Correlation", title =
-      "Mean Province Correlation") +
-  theme(plot.title=element_text(size = 12,
-                                hjust = 0.5),
-        axis.text.x = element_text(size = 9, angle = 90,
-                                   vjust = 0.6)) +
+  labs(x="Province", y = TeX('$C_{i}$', italic = TRUE)) +
+  theme(axis.text.x = element_text(size = 11, angle = 90,
+                                   vjust = 0.6),
+        axis.text.y = element_text(size = 11)) +
   geom_errorbar(aes(ymin=rowMeans.corrs.-sd_corrs,
                     ymax=rowMeans.corrs.+sd_corrs))
 
@@ -189,12 +188,10 @@ ggplot(mean_corrs_sf,
   theme_bw() +
   scale_x_discrete("Province", seq_provs_sf,
                    pnames[-9, 2], as.factor(seq_provs_sf)) +
-  labs(x="Province", y = "Mean Correlation", title =
-         "Mean Province Correlation (minus Formosa)") +
-  theme(plot.title=element_text(size = 12,
-                                hjust = 0.5),
-        axis.text.x = element_text(size = 9, angle = 90,
-                                   vjust = 0.6)) +
+  labs(x="Province", y = TeX('$C_{i}$', italic = TRUE)) +
+  theme(axis.text.x = element_text(size = 11, angle = 90,
+                                   vjust = 0.6),
+        axis.text.y = element_text(size = 11)) +
   geom_errorbar(aes(ymin = rowMeans.corrs. - sd_corrs_sf,
                     ymax = rowMeans.corrs. + sd_corrs_sf))
 
@@ -218,12 +215,10 @@ ggplot(mean_lags,
   theme_bw() +
   scale_x_discrete("Province", seq_provs,
                    pnames[, 2], as.factor(seq_provs)) +
-  labs(x="Province", y = "Mean Lag", title =
-         "Mean Province Lag") +
-  theme(plot.title=element_text(size = 12,
-                                hjust = 0.5),
-        axis.text.x = element_text(size = 9, angle = 90,
-                                   vjust = 0.6)) +
+  labs(x="Province", y = TeX('$L_{i}$', italic = TRUE)) +
+  theme(axis.text.x = element_text(size = 11, angle = 90,
+                                   vjust = 0.6),
+        axis.text.y = element_text(size = 11)) +
   geom_errorbar(aes(ymin = rowMeans.lags. - sd_lags,
                     ymax= rowMeans.lags. + sd_lags))
 
@@ -249,12 +244,10 @@ ggplot(mean_lags_sf,
   theme_bw() +
   scale_x_discrete("Province", seq_provs_sf,
                    pnames[-9, 2], as.factor(seq_provs_sf)) +
-  labs(x="Province", y = "Mean Lag", title =
-         "Mean Province Lag (minus Formosa)") +
-  theme(plot.title=element_text(size = 12,
-                                hjust = 0.5),
-        axis.text.x = element_text(size = 9, angle = 90,
-                                   vjust = 0.6)) +
+  labs(x="Province", y = TeX('$L_{i}$', italic = TRUE)) +
+  theme(axis.text.x = element_text(size = 11, angle = 90,
+                                   vjust = 0.6),
+        axis.text.y = element_text(size = 11)) +
   geom_errorbar(aes(ymin = rowMeans.lags. - sd_lags_sf,
                     ymax = rowMeans.lags. + sd_lags_sf))
 

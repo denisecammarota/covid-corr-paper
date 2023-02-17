@@ -37,14 +37,15 @@ tseries_total = as.data.frame(tseries_total)
 df <- melt(tseries_total ,  id.vars = 'Time', variable.name = 'Provinces')
 
 ggplot(df, aes(Time,value)) +
-  geom_line(aes(colour = Provinces), size = 1.25) +
-  theme_bw() + xlab("t (days)") + ylab(TeX("$I_{i}(t)$")) +
+  geom_line(aes(colour = Provinces), size = 1.5) +
+  theme_bw() + xlab(TeX("$t$ (days)",italic = TRUE)) +
+  ylab(TeX("$I_{i}(t)$", italic = TRUE)) +
   theme(legend.key.height = unit(0.2, 'cm'),
         legend.key.width = unit(0.2, 'cm'),
-        text = element_text(size=12)) +
-  guides(fill=guide_legend(ncol = 1))
+        text = element_text(size=20)) +
+  guides(fill=guide_legend(ncol = 1)) + scale_y_continuous(trans='log2')
 
-ggsave('figs/tseries.pdf', width = 8.73, height = 3.79)
+ggsave('figs/tseries.pdf', width = 11.73, height = 4.79)
 
 # plotting normalized time series
 tseries_total_norm <- tseries_total
@@ -58,14 +59,23 @@ df_norm <- melt(tseries_total_norm, id.vars = 'Time', variable.name = 'Provinces
 
 ggplot(df_norm, aes(Time,value)) +
   geom_line(aes(colour = Provinces), size = 1.25) +
-  theme_bw() + xlab("t (days)") + ylab(TeX("$I_{i}(t)$ (normalized)")) +
+  theme_bw() + xlab(TeX("t (days)", italic = TRUE)) +
+  ylab(TeX("$I_{i}(t)$ (normalized)", italic = TRUE)) +
   theme(legend.key.height = unit(0.2, 'cm'),
         legend.key.width = unit(0.2, 'cm'),
-        text = element_text(size=12)) +
+        text = element_text(size = 20)) +
   guides(fill=guide_legend(ncol = 1))
 
-ggsave('figs/tseries_norm.pdf', width = 8.73, height = 3.79)
+ggsave('figs/tseries_norm.pdf', width = 11.73, height = 4.79)
 
+# Plotting peaks -----------------------------------------------
 
+# searching and extracting the max indeces
+tseries_maxind <- apply(tseries_total, 2, which.max)
+tseries_maxind <- data.frame(tseries_maxind)
+tseries_maxind <- tseries_maxind$tseries_maxind
+tseries_maxind <- tseries_maxind[-1]
+tseries_maxind <- data.frame(tseries_maxind)
 
-
+# create total dataframe
+total_ind <- cbind(prov_name,tseries_maxind)

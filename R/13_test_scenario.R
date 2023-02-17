@@ -105,4 +105,4 @@ for(i in seq(3,n_provs+1,1)){
 p <- p +  plot_layout(ncol = 4)
 plot(p)
 
-sum((infected_results - tseries_2)**2)
+print(sum((infected_results - tseries_2)**2))

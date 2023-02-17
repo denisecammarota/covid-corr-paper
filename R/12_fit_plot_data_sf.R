@@ -173,7 +173,7 @@ ggplot(pars_sc, aes(x = prov_names, y=coeff_sc, group = 1)) +
                 width=0.5, size = 1) +
   theme_bw() +
   xlab(TeX("Province")) +
-  ylab(TeX("$\\beta_{i}$")) +
+  ylab(TeX('$\\beta_{i}$', italic = TRUE)) +
   theme(axis.text.x = element_text(size = 14, angle = 90,
                                    vjust = 0.7, hjust = 0.7),
         axis.text.y = element_text(size = 14),
